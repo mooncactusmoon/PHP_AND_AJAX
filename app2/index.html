@@ -99,6 +99,7 @@
       //查詢學生功能
       $("#nav").prepend(`<input type='text' name='query' id='query' placeholder='輸入學生姓名'>
                          <button onclick='query()'>查詢</button>`);
+      $("#nav").prepend(`<button class='btn btn-success' onclick='create()'>新增</button>`);
 
     });
   }
@@ -141,6 +142,10 @@
                 <td>${stu.name}</td>
                 <td>${stu.birthday}</td>
                 <td>${stu.national_id}</td>
+                <td>
+                  <button class='btn btn-info btn-sm' onclick='update(${stu.id})'>編輯</button>  
+                  <button class='btn btn-danger btn-sm' onclick='del(${stu.id})'>刪除</button>  
+                </td>
               </tr>
           `;
           $("#students").append(tr);
@@ -156,6 +161,7 @@
   //查詢資料的函式
   function query() {
     console.log($("#query").val());
+    // let q=$("#query").val() 和 {q:$("#query").val()} 一樣
     $.get("api/query.php",{q:$("#query").val()},(items)=>{
       console.log(items);
       showData(items);
@@ -169,7 +175,11 @@
   }
 
   //刪除資料的函式
-  function del() {
+  function del(id) {
+    $.post("api/delete.php",{id},(classnum)=>{
+      loadStudents(classnum);
+
+    })
 
   }
 </script>
