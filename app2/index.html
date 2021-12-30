@@ -29,8 +29,9 @@
 
   </div>
 
-
-
+<!-- 放彈入視窗 -->
+<div id="modal"></div>
+<!-- 放彈入視窗 end -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
     integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous">
   </script>
@@ -155,7 +156,23 @@
 
   //新增資料的函式
   function create() {
+    $("#modal").load("api/show_blank_form.php",()=>{
+      $("#blankForm").modal("show");
+    });
 
+  }
+  function add(){
+    let stu={
+      name:$("#name").val(),
+      classroom:$("#classroom").val(),
+      birthday:$("#birthday").val(),
+      seat_num:$("#num").val(),
+    }
+    $.post("api/insert.php",stu,(res)=>{
+      console.log(res);
+      $("#blankForm").modal("hide");
+      loadStudents($("#classroom").val());
+    })
   }
 
   //查詢資料的函式
