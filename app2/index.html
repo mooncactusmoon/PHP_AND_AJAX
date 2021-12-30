@@ -8,7 +8,8 @@
   <title>學生資料管理系統</title>
   <link rel="shortcut icon" href="#" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <!---匯入要使用的函式庫--->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -19,15 +20,22 @@
   <h1 class="header">學生資料管理系統</h1>
   <div class="container">
 
-    <div class="card-columns" id="classlist">
-      
-    </div>
+    <div class="card-columns" id="classlist"></div>
+
+    <table id="students" class="table">
+
+    </table>
+
   </div>
 
 
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>    
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous">
+  </script>
 </body>
 
 </html>
@@ -40,27 +48,55 @@
    * 5.是否需要更新畫面內容？更新畫面的方法？
    ************************************/
 
-   list();
-  function list(){
-    $.get("api/list.php",(list)=>{
-      $("#classlist").html(list);
+  list();
+
+  function list() {
+    $.get("api/list.php", (list) => {
+      // $("#classlist").html(list); 後端寫入
       // console.log(list);
       // 前端寫法
-      // let classlist=JSON.parse(list); //轉成陣列
-      // let card;
-      // classlist.forEach((c,i,)=>{
-      //   //裡面的${}是JS語法的變數
-      //   card=`<div class="card">
-      //         <div class="card-body">
-      //         <h5 class="card-title">${c.班級}</h5>
-      //         <p class="card-text">${c.人數}</p>
-      //         </div>
-      //         </div>`; 
+      let classlist = JSON.parse(list); //轉成陣列
+      let card;
+      classlist.forEach((c, i, ) => {
+        //裡面的${}是JS語法的變數
+        card = `<a href="#" onclick="loadStudents('${c.班級}')">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">${c.班級}</h5>
+                    <p class="card-text">${c.人數}</p>
+                  </div>
+                </div>
+              </a>`;
 
-      //   $("#classlist").append(card);
+        $("#classlist").append(card);
 
-      // });
+      });
     });
+  }
+  //載入班級學員列表
+  function loadStudents(classnum) {
+    $("#students").html("");
+    //檔名盡量不用駝峰命名，用底線來區分較保險
+    //下方{}代表物件 :前面屬性 :後面value 
+    $.getJSON("api/load_student.php", {classroom: classnum},(stulist)=>{
+      // console.log(stulist);
+      // stulist.forEach((stu,idx)=>{}); 箭頭函式
+      // stulist.forEach(function(stu,idx){});//匿名函式
+      let tr="";
+      stulist.forEach((stu,idx)=>{ 
+        tr=`<tr>
+            <td>${stu.uni_id}</td>
+            <td>${stu.seat_num}</td>
+            <td>${stu.name}</td>
+            <td>${stu.birthday}</td>
+            <td>${stu.national_id}</td>
+            </tr>
+            `;
+        $("#students").append(tr);
+      })
+
+    }); 
+
   }
 
   //新增資料的函式
