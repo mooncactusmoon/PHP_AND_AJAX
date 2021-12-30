@@ -17,10 +17,11 @@
 </head>
 
 <body>
-  <h1 class="header">學生資料管理系統</h1>
+  <h1 class="header"><a href="#" onclick="home()">學生資料管理系統</a></h1>
   <div class="container">
 
     <div class="card-columns" id="classlist"></div>
+    <nav id="nav" class="d-flex justify-content-between"></nav>
 
     <table id="students" class="table">
 
@@ -48,6 +49,11 @@
    * 5.是否需要更新畫面內容？更新畫面的方法？
    ************************************/
 
+   function home(){
+     $("#classlist").show();
+     $("#nav").hide().removeClass('d-flex');
+     $("#students").html("");
+   }
   list();
 
   function list() {
@@ -71,11 +77,36 @@
         $("#classlist").append(card);
 
       });
+
     });
   }
+
+  function showNav() {
+    $("#nav").html("");
+    $("#nav").addClass('d-flex');
+    $.get("api/list.php", (list) => {
+      let classlist = JSON.parse(list); //轉成陣列
+      let btn;
+      classlist.forEach((c, i, ) => {
+        //裡面的${}是JS語法的變數
+        btn = `<a href="#" class="mx-2 bordered rounded" onclick="loadStudents('${c.班級}')">
+                  ${c.班級}
+              </a>`;
+
+        $("#nav").append(btn);
+
+      });
+
+      $("#nav").prepend(`<input type='text' name='query' id='query' placeholder='輸入學生姓名'>
+                         <button onclick='query()'>查詢</button>`);
+
+    });
+  }
+
   //載入班級學員列表
   function loadStudents(classnum) {
     $("#students").html("");
+    $("#nav").html("");
     //檔名盡量不用駝峰命名，用底線來區分較保險
     //下方{}代表物件 :前面屬性 :後面value 
     $.getJSON("api/load_student.php", {classroom: classnum},(stulist)=>{
@@ -94,7 +125,8 @@
             `;
         $("#students").append(tr);
       })
-
+      $("#classlist").hide();
+      showNav();
     }); 
 
   }
