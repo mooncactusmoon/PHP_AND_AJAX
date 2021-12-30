@@ -43,21 +43,23 @@
    list();
   function list(){
     $.get("api/list.php",(list)=>{
+      $("#classlist").html(list);
       // console.log(list);
-      let classlist=JSON.parse(list); //轉成陣列
-      let card;
-      classlist.forEach((c,i,)=>{
-        //裡面的${}是JS語法的變數
-        card=`<div class="card">
-              <div class="card-body">
-              <h5 class="card-title">${c.班級}</h5>
-              <p class="card-text">${c.人數}</p>
-              </div>
-              </div>`;
+      // 前端寫法
+      // let classlist=JSON.parse(list); //轉成陣列
+      // let card;
+      // classlist.forEach((c,i,)=>{
+      //   //裡面的${}是JS語法的變數
+      //   card=`<div class="card">
+      //         <div class="card-body">
+      //         <h5 class="card-title">${c.班級}</h5>
+      //         <p class="card-text">${c.人數}</p>
+      //         </div>
+      //         </div>`; 
 
-        $("#classlist").append(card);
+      //   $("#classlist").append(card);
 
-      });
+      // });
     });
   }
 
