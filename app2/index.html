@@ -96,7 +96,7 @@
         $("#nav").append(btn);
 
       });
-
+      //查詢學生功能
       $("#nav").prepend(`<input type='text' name='query' id='query' placeholder='輸入學生姓名'>
                          <button onclick='query()'>查詢</button>`);
 
@@ -113,23 +113,40 @@
       // console.log(stulist);
       // stulist.forEach((stu,idx)=>{}); 箭頭函式
       // stulist.forEach(function(stu,idx){});//匿名函式
-      let tr="";
-      stulist.forEach((stu,idx)=>{ 
-        tr=`<tr>
-            <td>${stu.uni_id}</td>
-            <td>${stu.seat_num}</td>
-            <td>${stu.name}</td>
-            <td>${stu.birthday}</td>
-            <td>${stu.national_id}</td>
-            </tr>
-            `;
-        $("#students").append(tr);
-      })
+      showData(stulist);
+ 
       $("#classlist").hide();
       showNav();
     }); 
 
   }
+
+  //table顯示學生專用
+  function showData(array){
+    $("#students").html("");
+    let data;
+    //先判斷來的是不是object，不是的話就轉陣列
+    if(typeof array=='object'){
+      data=array;
+    }else{
+      data=JSON.parse(array);
+    }
+    // console.log(array);
+    let tr="";
+        data.forEach((stu,idx)=>{
+          tr=`
+              <tr>
+                <td>${stu.uni_id}</td>
+                <td>${stu.seat_num}</td>
+                <td>${stu.name}</td>
+                <td>${stu.birthday}</td>
+                <td>${stu.national_id}</td>
+              </tr>
+          `;
+          $("#students").append(tr);
+        })
+  }
+
 
   //新增資料的函式
   function create() {
@@ -138,6 +155,11 @@
 
   //查詢資料的函式
   function query() {
+    console.log($("#query").val());
+    $.get("api/query.php",{q:$("#query").val()},(items)=>{
+      console.log(items);
+      showData(items);
+    });
 
   }
 
